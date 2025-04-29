@@ -2,7 +2,8 @@
 N0CTURNALBBS
 </h1>
 <p align="center">
-<img src="https://github.com/user-attachments/assets/a8b3f7dd-219c-4e7d-9fa8-4dc6173ce2cf"/>
+
+<img src="https://github.com/user-attachments/assets/29ca54ff-34cd-4f5d-873f-793177089a9c"/>
  <br>A textboard engine built on the stuff of nightmares and minimalism in mind.
 </p>
 
