@@ -1,0 +1,27 @@
+# N0CTURNALBBS Moderator Configuration
+# WARNING: This file should have restricted permissions (chmod 600)
+
+moderators:
+  - username: test
+    password: "$2y$10$QRLn65zCitMbDR.4r7ShbeVE01Dx4TtdQay9KqWp/bCzLGNZYSl2i"  # bcrypted 'test'
+    is_active: true
+
+  - username: test2
+    password: "$2y$10$QRLn65zCitMbDR.4r7ShbeVE01Dx4TtdQay9KqWp/bCzLGNZYSl2i"  # bcrypted 'test'
+    is_active: false
+
+# Session Configuration
+session:
+  cookie_name: "ITSANIGHTMARE"
+  max_age: 86400  # 24 hours in seconds
+  secure: false   # Set to true in production with HTTPS
+  http_only: true
+  same_site: "lax"
+  
+# Security settings
+security:
+  bcrypt_cost: 12            # Higher is more secure but slower
+  min_password_length: 12    # Minimum password length
+  max_login_attempts: 5      # Max failed login attempts before lockout
+  lockout_duration: 1800     # Lockout duration in seconds (30 minutes)
+

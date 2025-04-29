@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }}</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/font.css">
+    <meta name="description" content="{{ .Site.Description }}">
+</head>
+
+<body>
+    <header>
+        <h1><a href="/">{{ .Site.Title }}</a></h1>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="error-card">
+                <h2>Error</h2>
+                <p>{{ .Error }}</p>
+                <div class="error-actions">
+                    <a href="/" class="error-home-link">Return to Home</a>
+                    <button onclick="window.history.back()" class="error-back-button">Go Back</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p class="text-center meta">{{ .Site.FooterText }} · {{ .CurrentYear }}</p>
+    </footer>
+
+    <style>
+        .error-card {
+            background-color: var(--color-peach);
+            border-radius: 5px;
+            padding: 2rem;
+            margin: 3rem auto;
+            max-width: 600px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            text-align: center;
+        }
+
+        .error-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .error-home-link,
+        .error-back-button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--color-sand);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            text-decoration: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .error-home-link:hover,
+        .error-back-button:hover {
+            background-color: var(--color-wheat);
+        }
+    </style>
+</body>
+
+</html>

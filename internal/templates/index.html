@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }} - {{ .Site.Tagline }}</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/font.css">
+        <meta name="description" content="{{ .Site.Description }}">
+</head>
+
+<body>
+    <header>
+        <h1><a href="/">{{ .Site.Title }}</a></h1>
+        <nav>
+            <ul>
+                {{ range .Boards }}
+                <li><a href="/board/{{ .Slug }}">{{ .Name }}</a></li>
+                {{ end }}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>{{ .Site.Greeting }}</h2>
+            <p>{{ .Site.Tagline }}</p>
+
+            <div class="board-list">
+                {{ range .Boards }}
+                <div class="board-card">
+                    <h3><a href="/board/{{ .Slug }}">{{ .Name }}</a></h3>
+                    <p>{{ .Description }}</p>
+                    <p class="meta">{{ .ThreadCount }} threads · {{ .PostCount }} posts</p>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p class="text-center meta">{{ .Site.FooterText }} · {{ .CurrentYear }}</p>
+    </footer>
+</body>
+
+</html>

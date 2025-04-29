@@ -1,0 +1,29 @@
+# Rate limiting error returns JSON instead of HTML
+# Its a NIGHTMARE for the bots.
+
+rate_limits:
+  max_requests: 4              # Allowed requests per window
+  window_seconds: 60           # Time window in seconds (1 minute)
+  cleanup_seconds: 300         # Cleanup interval (5 minutes)
+  
+  enable_json_response: false   # Return JSON instead of HTML
+  error_message: "You're posting too fast. The board can't keep up!"
+  
+  # Detailed error response structure
+  error_response:
+    code: 429                   # HTTP status code
+    headers:
+      Content-Type: "application/json"
+      X-RateLimit-Limit: "{{ .MaxRequests }}"
+      X-RateLimit-Remaining: "0"
+      Retry-After: "{{ .RetryAfter }}"
+    body: |
+      {
+        "error": "rate_limit_exceeded",
+        "message": "Slow down, you're moving too fast!",
+        "retry_after": {{ .RetryAfter }},
+        "limits": {
+          "max": {{ .MaxRequests }},
+          "window": {{ .WindowSeconds }}
+        },
+      }

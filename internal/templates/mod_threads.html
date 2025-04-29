@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }}</title>
+    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <meta name="description" content="{{ .Site.Description }}">
+    <style>
+        .mod-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: var(--border-style);
+        }
+        
+        .mod-title {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mod-title h2 {
+            margin-bottom: 0.25rem;
+        }
+        
+        .mod-title p {
+            color: var(--color-muted);
+            font-size: 0.9rem;
+        }
+        
+        .mod-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .mod-nav {
+            border: var(--border-style);
+            background-color: rgba(64, 48, 20, 0.15);
+            margin-bottom: 2rem;
+        }
+        
+        .mod-nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        .mod-nav li {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .mod-nav a {
+            display: block;
+            padding: 1rem 0.5rem;
+            color: var(--color-yellow);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .mod-nav a.active {
+            background-color: rgba(64, 48, 20, 0.4);
+            border-bottom: 3px solid var(--color-accent);
+        }
+        
+        .mod-nav a:hover {
+            background-color: rgba(64, 48, 20, 0.3);
+            border-bottom: 3px solid var(--color-accent);
+        }
+        
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: var(--border-style);
+            background-color: rgba(64, 48, 20, 0.15);
+        }
+        
+        .filter-select {
+            padding: 0.5rem;
+            background-color: rgba(13, 13, 13, 0.8);
+            border: var(--border-style);
+            color: var(--color-text);
+            font-family: 'Chakra Petch', sans-serif;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+        
+        .thread-list-mod {
+            position: relative;
+            border: var(--border-style);
+            background-color: rgba(64, 48, 20, 0.15);
+            margin-bottom: 2rem;
+        }
+        
+        .thread-list-mod::before {
+            content: "//THREADS";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: var(--color-bg);
+            padding: 0 10px;
+            color: var(--color-gold);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.8rem;
+        }
+        
+        .mod-thread {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: var(--border-style);
+            transition: background-color 0.2s ease;
+            align-items: center;
+        }
+        
+        .mod-thread:hover {
+            background-color: rgba(64, 48, 20, 0.3);
+        }
+        
+        .mod-thread:last-child {
+            border-bottom: none;
+        }
+        
+        .thread-info {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .thread-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .thread-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--color-muted);
+        }
+        
+        .thread-board {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: rgba(64, 48, 20, 0.4);
+            color: var(--color-accent);
+            font-size: 0.8rem;
+            border-radius: 3px;
+            margin-right: 0.5rem;
+        }
+        
+        .thread-controls {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        
+        .mod-button {
+            padding: 0.5rem 0.75rem;
+            background-color: rgba(64, 48, 20, 0.5);
+            color: var(--color-text);
+            border: var(--border-style);
+            cursor: pointer;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        
+        .mod-button:hover {
+            background-color: var(--color-dark-bronze);
+        }
+        
+        .mod-button.view {
+            background-color: rgba(64, 48, 20, 0.3);
+        }
+        
+        .mod-button.delete {
+            background-color: rgba(170, 30, 30, 0.3);
+        }
+        
+        .mod-button.delete:hover {
+            background-color: rgba(170, 30, 30, 0.5);
+        }
+        
+        .delete-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(13, 13, 13, 0.9);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .delete-modal.active {
+            display: flex;
+        }
+        
+        .delete-dialog {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--color-bg);
+            border: var(--border-style);
+            padding: 2rem;
+            position: relative;
+            box-shadow: var(--glow);
+        }
+        
+        .delete-dialog::before {
+            content: "//CONFIRM DELETE";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: var(--color-bg);
+            padding: 0 10px;
+            color: var(--color-gold);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.8rem;
+        }
+        
+        .delete-dialog h3 {
+            margin-bottom: 1.5rem;
+            color: #ff7070;
+        }
+        
+        .delete-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .delete-actions button {
+            padding: 0.5rem 1rem;
+        }
+        
+        .delete-actions .cancel {
+            background-color: rgba(64, 48, 20, 0.3);
+        }
+        
+        .delete-actions .confirm {
+            background-color: rgba(170, 30, 30, 0.3);
+        }
+        
+        .delete-actions .confirm:hover {
+            background-color: rgba(170, 30, 30, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .mod-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .mod-actions {
+                width: 100%;
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .mod-thread {
+                grid-template-columns: 1fr;
+            }
+            
+            .thread-controls {
+                justify-content: flex-start;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="/">{{ .Site.Title }}</a></h1>
+    </header>
+    
+    <div class="container">
+        <div class="mod-header">
+            <div class="mod-title">
+                <h2>Thread Moderation</h2>
+                {{ if .BoardName }}
+                <p>Viewing threads in: {{ .BoardName }}</p>
+                {{ else }}
+                <p>Viewing all threads</p>
+                {{ end }}
+            </div>
+            
+            <div class="mod-actions">
+                <a href="/mod/dashboard" class="error-home-link">Dashboard</a>
+                <a href="/mod/logout" class="error-home-link">Logout</a>
+            </div>
+        </div>
+        
+        <nav class="mod-nav">
+            <ul>
+                <li><a href="/mod/dashboard">Dashboard</a></li>
+                <li><a href="/mod/threads" class="active">Threads</a></li>
+                <li><a href="/mod/actions">Action History</a></li>
+                <li><a href="/mod/filters">Filters</a></li>
+            </ul>
+        </nav>
+        
+        <div class="filter-bar">
+            <form action="/mod/threads" method="get">
+                <label for="board-filter">Filter by board:</label>
+                <select id="board-filter" name="board" class="filter-select" onchange="this.form.submit()">
+                    <option value="">All Boards</option>
+                    {{ range .Boards }}
+                    <option value="{{ .Slug }}" {{ if eq $.SelectedBoard .Slug }}selected{{ end }}>{{ .Name }}</option>
+                    {{ end }}
+                </select>
+            </form>
+            
+            <div class="thread-count">
+                Showing {{ len .Threads }} thread(s)
+            </div>
+        </div>
+        
+        <div class="thread-list-mod">
+            {{ if .Threads }}
+                {{ range .Threads }}
+                <div class="mod-thread" data-thread-id="{{ .ID }}">
+                    <div class="thread-info">
+                        <div style="word-wrap: anywhere;">
+                            <a href="/thread/{{ .ID }}" class="thread-title">{{ .Title }}</a>
+                        </div>
+                        <div class="thread-meta">
+                            <span class="thread-board">{{ .BoardName }}</span>
+                            <span>{{ .PostCount }} posts</span>
+                            <span>Created: {{ .CreatedAt | formatTime }}</span>
+                            <span>Last post: {{ .LastPostAt | formatTime }}</span>
+                        </div>
+                    </div>
+                    <div class="thread-controls">
+                        <a href="/mod/threads/{{ .ID }}/posts" class="mod-button view">View Posts</a>
+                        <button class="mod-button delete" onclick="showDeleteModal('{{ .ID }}', '{{ .Title }}')">Delete</button>
+                    </div>
+                </div>
+                {{ end }}
+            {{ else }}
+                <p style="padding: 2rem; text-align: center;">No threads found.</p>
+            {{ end }}
+        </div>
+        
+        {{ if .Pagination.TotalPages }}
+        <div class="pagination">
+            {{ if .Pagination.HasPrev }}
+            <a href="/mod/threads?page={{ .Pagination.PrevPage }}{{ if .Pagination.BoardSlug }}&board={{ .Pagination.BoardSlug }}{{ end }}">&laquo; Previous</a>
+            {{ end }}
+            
+            <span>Page {{ .Pagination.CurrentPage }} of {{ .Pagination.TotalPages }}</span>
+            
+            {{ if .Pagination.HasNext }}
+            <a href="/mod/threads?page={{ .Pagination.NextPage }}{{ if .Pagination.BoardSlug }}&board={{ .Pagination.BoardSlug }}{{ end }}">Next &raquo;</a>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+
+
+    
+    <div id="deleteModal" class="delete-modal">
+        <div class="delete-dialog">
+            <h3>Delete Thread</h3>
+            <p>Are you sure you want to delete this thread?</p>
+            <p id="deleteThreadTitle" style="color: var(--color-accent); margin: 1rem 0;"></p>
+            <p>This action cannot be undone and will delete all replies.</p>
+            
+            <form id="deleteThreadForm">
+                <input type="hidden" id="csrf_token" value="{{ .csrfToken }}">
+                <div class="form-group">
+                    <label for="delete-reason">Reason for deletion:</label>
+                    <input type="text" id="delete-reason" name="reason" required>
+                </div>
+                
+                <div class="delete-actions">
+                    <button type="button" class="cancel" onclick="hideDeleteModal()">Cancel</button>
+                    <button type="button" class="confirm" onclick="confirmDelete()">Delete Thread</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let currentThreadId = null;
+        
+        function showDeleteModal(threadId, threadTitle) {
+            currentThreadId = threadId;
+            document.getElementById('deleteThreadTitle').textContent = threadTitle;
+            document.getElementById('deleteModal').classList.add('active');
+        }
+        
+        function hideDeleteModal() {
+            currentThreadId = null;
+            document.getElementById('deleteModal').classList.remove('active');
+            document.getElementById('delete-reason').value = '';
+        }
+        
+        function confirmDelete() {
+            if (!currentThreadId) return;
+            
+            const reason = document.getElementById('delete-reason').value;
+            const csrfToken = document.getElementById('csrf_token').value;
+            
+            if (!reason) {
+                alert('Please provide a reason for deletion');
+                return;
+            }
+            
+            fetch(`/mod/threads/${currentThreadId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRF-Token': csrfToken
+                },
+                body: `reason=${encodeURIComponent(reason)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const threadElement = document.querySelector(`.mod-thread[data-thread-id="${currentThreadId}"]`);
+                    if (threadElement) {
+                        threadElement.remove();
+                    }
+                    hideDeleteModal();
+                    
+                    alert('Thread deleted successfully');
+                } else {
+                    alert(`Error: ${data.error || 'Failed to delete thread'}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the thread');
+            });
+        }
+    </script>
+</body>
+</html>

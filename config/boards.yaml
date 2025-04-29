@@ -1,0 +1,5 @@
+# Board(s) generation upon first startup
+boards:
+  - slug: tb
+    name: testboard
+    description: "This is a testboard"

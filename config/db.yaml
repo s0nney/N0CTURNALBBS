@@ -1,0 +1,11 @@
+# PSQL DB connection
+database:
+  host: change
+  port: me
+  user: asap
+  password: "change" 
+  name: me 
+  sslmode: asap
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: 300 # seconds

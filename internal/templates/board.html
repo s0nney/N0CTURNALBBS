@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }} - {{ .Site.Tagline }}</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/font.css">
+    <meta name="description" content="{{ .Site.Description }}">
+</head>
+
+<body>
+    <header>
+        <h1><a href="/">{{ .Site.Title }}</a></h1>
+        <nav>
+            <ul>
+                {{ range .Boards }}
+                <li><a href="/board/{{ .Slug }}">{{ .Name }}</a></li>
+                {{ end }}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>{{ .Board.Name }}</h2>
+            <p>{{ .Board.Description }}</p>
+
+            <form action="/thread/new/{{ .Board.ID }}" method="post">
+                <h3>Create New Thread</h3>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title"
+                        placeholder="Min: {{ .minTitleLength }}, Max: {{ .maxTitleLength }} Characters"
+                        minlength="{{ .minTitleLength }}" maxlength="{{ .maxTitleLength }}">
+                </div>
+                <div class="form-group">
+                    <label for="author">Name (optional)</label>
+                    <input type="text" id="author" name="author" placeholder="Max: {{ .maxAuthorLength}} Characters"
+                        maxlength="{{ .maxAuthorLength }}">
+                </div>
+                <div class="form-group">
+                    <label for="body">Message</label>
+                    <textarea id="body" name="body"
+                        placeholder="Min: {{ .minBodyLength}}, Max: {{ .maxBodyLength }} characters" required
+                        minlength="{{ .minBodyLength }}" maxlength="{{ .maxBodyLength }}"></textarea>
+                    <input type="hidden" name="_csrf" value="{{ .csrfToken }}">
+
+                    <input type="text" name="contact_preference" autocomplete="off"
+                        style="opacity: 0; position: absolute; left: -9999px; top: -9999px;" tabindex="-1">
+
+                    <input type="email" name="confirm_address" autocomplete="off"
+                        style="opacity: 0; position: absolute; left: -9999px; top: -9999px;" tabindex="-1">
+                </div>
+                <div
+                    class="p-6 rounded-lg bg-gradient-to-br from-[#0D0D0D] to-[#1a1a1a] border border-[#D9A036] relative overflow-hidden mb-4">
+                    <div class="mb-6">
+                        <div style="padding: 5px;"
+                            class="text-[#F2E750] text-xl font-mono mb-2 p-4 bg-[#0D0D0D] rounded border border-[#D9A036]/20">
+                            {{ .captcha }}
+                        </div>
+                    </div>
+                    <input type="number" name="captcha_answer"
+                        style="background: rgba(13, 13, 13, 0.9); border: 2px solid rgba(217, 160, 54, 0.3);color: #F2E750; padding: 5px; border-radius: 5px;"
+                        class="w-full p-2 bg-[#0D0D0D] border border-[#D9A036] rounded text-[#F2E750] focus:outline-none focus:border-[#F2E750] transition-colors"
+                        placeholder="Enter answer..." required>
+                </div><br>
+                <button type="submit">Create Thread</button>
+            </form>
+
+            <div class="thread-list">
+                {{ if .Threads }}
+                {{ range .Threads }}
+                <div class="thread">
+                    <h3 style="word-break: break-word;"><a href="/thread/{{ .ID }}">{{ .Title }}</a></h3>
+                    <p class="meta">
+                        {{ .PostCount }} posts · Latest: {{ formatTime .LastPostAt }}
+                    </p>
+                    <div class="preview">
+                        {{ .Preview }}
+                    </div>
+                </div>
+                {{ end }}
+                {{ else }}
+                <p>No threads yet. Be the first to post!</p>
+                {{ end }}
+            </div>
+
+            {{ if .Pagination.TotalPages }}
+            <div class="pagination">
+                {{ if .Pagination.HasPrev }}
+                <a href="/board/{{ .Board.Slug }}?page={{ .Pagination.PrevPage }}">&laquo; Previous</a>
+                {{ end }}
+
+                <span>Page {{ .Pagination.CurrentPage }} of {{ .Pagination.TotalPages }}</span>
+
+                {{ if .Pagination.HasNext }}
+                <a href="/board/{{ .Board.Slug }}?page={{ .Pagination.NextPage }}">Next &raquo;</a>
+                {{ end }}
+            </div>
+            {{ end }}
+        </div>
+    </main>
+
+    <footer>
+        <p class="text-center meta">{{ .Site.FooterText }} · {{ .CurrentYear }}</p>
+    </footer>
+</body>
+
+</html>

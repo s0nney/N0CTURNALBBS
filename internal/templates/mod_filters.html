@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }}</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/font.css">
+    <meta name="description" content="{{ .Site.Description }}">
+    <style>
+        .filters-container {
+            border: var(--border-style);
+            background-color: rgba(64, 48, 20, 0.15);
+            padding: 2rem;
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .filters-container::before {
+            content: "//WORD FILTERS";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: var(--color-bg);
+            padding: 0 10px;
+            color: var(--color-gold);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.8rem;
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-list {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .filter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: rgba(13, 13, 13, 0.3);
+            border: var(--border-style);
+        }
+
+        .filter-actions form {
+            display: inline-block;
+            margin-left: 1rem;
+        }
+
+                .mod-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: var(--border-style);
+        }
+
+        .mod-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mod-title h2 {
+            margin-bottom: 0.25rem;
+        }
+
+        .mod-title p {
+            color: var(--color-muted);
+            font-size: 0.9rem;
+        }
+
+        .mod-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .mod-nav {
+            border: var(--border-style);
+            background-color: rgba(64, 48, 20, 0.15);
+            margin-bottom: 2rem;
+        }
+
+        .mod-nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .mod-nav li {
+            flex: 1;
+            text-align: center;
+        }
+
+        .mod-nav a {
+            display: block;
+            padding: 1rem 0.5rem;
+            color: var(--color-yellow);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .mod-nav a.active {
+            background-color: rgba(64, 48, 20, 0.4);
+            border-bottom: 3px solid var(--color-accent);
+        }
+
+        .mod-nav a:hover {
+            background-color: rgba(64, 48, 20, 0.3);
+            border-bottom: 3px solid var(--color-accent);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .dashboard-card {
+            border: var(--border-style);
+            background-color: rgba(64, 48, 20, 0.15);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .dashboard-card::before {
+            content: attr(data-title);
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: var(--color-bg);
+            padding: 0 10px;
+            color: var(--color-gold);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(13, 13, 13, 0.5);
+            border: var(--border-style);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+        }
+
+        .recent-actions {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .action-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1rem;
+            padding: 0.75rem;
+            background-color: rgba(13, 13, 13, 0.3);
+            border: var(--border-style);
+            align-items: center;
+        }
+
+        .action-type {
+            padding: 0.25rem 0.5rem;
+            background-color: rgba(64, 48, 20, 0.5);
+            color: var(--color-accent);
+            font-size: 0.8rem;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .action-time {
+            font-size: 0.85rem;
+            color: var(--color-muted);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mod-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .mod-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1><a href="/">{{ .Site.Title }}</a></h1>
+    </header>
+    <div class="container">
+        <div class="mod-header">
+            <div class="mod-title">
+                <h2>Moderation Dashboard</h2>
+                <p>Create or delete a new word filter</p>
+            </div>
+
+            <div class="mod-actions">
+                <a href="/mod/logout" class="error-home-link">Logout</a>
+            </div>
+        </div>
+
+        <nav class="mod-nav">
+            <ul>
+                <li><a href="/mod/dashboard">Dashboard</a></li>
+                <li><a href="/mod/threads">Threads</a></li>
+                <li><a href="/mod/actions">Action History</a></li>
+                <li><a href="/mod/filters" class="active">Filters</a></li>
+            </ul>
+        </nav>
+        <div class="filters-container">
+            <form method="POST" action="/mod/filters/add" class="filter-form">
+                <input type="hidden" name="_csrf" value="{{ .csrfToken }}">
+                <input type="text" name="word" placeholder="Enter word to ban" required style="width: 100%"
+                    class="filter-select">
+                <button type="submit" class="mod-button">Add Filter</button>
+            </form>
+
+            <div class="filter-list">
+                {{ if .Filters }}
+                {{ range .Filters }}
+                <div class="filter-item">
+                    <span>{{ .Word }}</span>
+                    <div class="filter-actions">
+                        <span class="action-time">Added {{ .CreatedAt | formatTime }}</span>
+                        <form method="POST" action="/mod/filters/delete/{{ .ID }}">
+                            <input type="hidden" name="_csrf" value="{{ $.csrfToken }}">
+                            <button type="submit" class="mod-button delete">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {{ end }}
+                {{ else }}
+                <p>No banned words configured</p>
+                {{ end }}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

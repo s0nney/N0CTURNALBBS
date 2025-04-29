@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }}</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/font.css">
+    <meta name="description" content="{{ .Site.Description }}">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 2rem;
+            border: var(--border-style);
+            background-color: rgba(64, 48, 20, 0.2);
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+
+        .login-container::before {
+            content: "//AUTHENTICATE";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: var(--color-bg);
+            padding: 0 10px;
+            color: var(--color-gold);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.8rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            text-align: center;
+            color: var(--color-muted);
+        }
+
+        .error-message {
+            background-color: rgba(255, 70, 70, 0.1);
+            border: 1px solid rgba(255, 70, 70, 0.3);
+            color: #ff7070;
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h2>MODERATOR LOGIN</h2>
+            <p>{{ .Site.Title }} Control Center</p>
+        </div>
+
+        {{ if .Error }}
+        <div class="error-message">
+            {{ .Error }}
+        </div>
+        {{ end }}
+
+        <form action="/mod/login" method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ .Username }}" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required=""
+                    style="width: 100%;padding: 0.75rem;background-color: rgba(13, 13, 13, 0.8);border: var(--border-style);color: var(--color-text);font-family: 'Chakra Petch', sans-serif;font-size: 1rem;resize: vertical;transition: all 0.3s ease;">
+                <input type="hidden" name="_csrf" value="{{ .csrfToken }}">
+            </div>
+            <div class="mb-6">
+                <div style="padding: 5px;"
+                    class="text-[#F2E750] text-xl font-mono mb-2 p-4 bg-[#0D0D0D] rounded border border-[#D9A036]/20">
+                    {{ .captcha }}
+                </div>
+                <input type="number" name="captcha_answer"
+                    style="background: rgba(13, 13, 13, 0.9); border: 2px solid rgba(217, 160, 54, 0.3);color: #F2E750; padding: 5px; border-radius: 5px;"
+                    class="w-full p-2 bg-[#0D0D0D] border border-[#D9A036] rounded text-[#F2E750] focus:outline-none focus:border-[#F2E750] transition-colors"
+                    placeholder="Enter answer..." required>
+            <br>
+    </div><br>
+
+    <button type="submit">Access System</button>
+    </form>
+
+    <div class="login-footer">
+        Authorized personnel only.
+        <br>Unauthorized access attempts will be logged.
+    </div>
+    </div>
+</body>
+
+</html>

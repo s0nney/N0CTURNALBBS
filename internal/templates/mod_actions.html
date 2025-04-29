@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }}</title>
+    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <meta name="description" content="{{ .Site.Description }}">
+    <style>
+        .mod-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: var(--border-style);
+        }
+
+        .mod-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mod-title h2 {
+            margin-bottom: 0.25rem;
+        }
+
+        .mod-title p {
+            color: var(--color-muted);
+            font-size: 0.9rem;
+        }
+
+        .mod-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .mod-nav {
+            border: var(--border-style);
+            background-color: rgba(64, 48, 20, 0.15);
+            margin-bottom: 2rem;
+        }
+
+        .mod-nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .mod-nav li {
+            flex: 1;
+            text-align: center;
+        }
+
+        .mod-nav a {
+            display: block;
+            padding: 1rem 0.5rem;
+            color: var(--color-yellow);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .mod-nav a.active {
+            background-color: rgba(64, 48, 20, 0.4);
+            border-bottom: 3px solid var(--color-accent);
+        }
+
+        .mod-nav a:hover {
+            background-color: rgba(64, 48, 20, 0.3);
+            border-bottom: 3px solid var(--color-accent);
+        }
+
+        .actions-container {
+            border: var(--border-style);
+            background-color: rgba(64, 48, 20, 0.15);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .actions-container::before {
+            content: "//ACTION LOG";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background-color: var(--color-bg);
+            padding: 0 10px;
+            color: var(--color-gold);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.8rem;
+        }
+
+        .action-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .action-table th {
+            text-align: left;
+            padding: 0.75rem;
+            background-color: rgba(64, 48, 20, 0.3);
+            color: var(--color-accent);
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: var(--border-style);
+        }
+
+        .action-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(64, 48, 20, 0.3);
+        }
+
+        .action-table tr:hover {
+            background-color: rgba(64, 48, 20, 0.25);
+        }
+
+        .action-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .action-type {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: rgba(64, 48, 20, 0.4);
+            color: var(--color-accent);
+            font-size: 0.8rem;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .action-type.delete {
+            background-color: rgba(170, 30, 30, 0.2);
+            color: #ff7070;
+        }
+
+        .action-target {
+            font-family: 'Chakra Petch', sans-serif;
+        }
+
+        .action-time {
+            color: var(--color-muted);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .action-reason {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .action-reason:hover {
+            overflow: visible;
+            white-space: normal;
+            background-color: var(--color-bg);
+            position: relative;
+            z-index: 10;
+            box-shadow: var(--shadow);
+            padding: 0.5rem;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 1100px) {
+            .action-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mod-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .mod-actions {
+                width: 100%;
+            }
+
+            .mod-nav ul {
+                flex-direction: column;
+            }
+
+            .mod-nav a {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1><a href="/">{{ .Site.Title }}</a></h1>
+    </header>
+
+    <div class="container">
+        <div class="mod-header">
+            <div class="mod-title">
+                <h2>Moderation Action Log</h2>
+                <p>Complete history of all moderation actions</p>
+            </div>
+
+            <div class="mod-actions">
+                <a href="/mod/dashboard" class="error-home-link">Dashboard</a>
+                <a href="/mod/logout" class="error-home-link">Logout</a>
+            </div>
+        </div>
+
+        <nav class="mod-nav">
+            <ul>
+                <li><a href="/mod/dashboard">Dashboard</a></li>
+                <li><a href="/mod/threads">Threads</a></li>
+                <li><a href="/mod/actions" class="active">Action History</a></li>
+                <li><a href="/mod/filters">Filters</a></li>
+            </ul>
+        </nav>
+
+        <div class="actions-container">
+            {{ if .Actions }}
+            <table class="action-table">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Target</th>
+                        <th>Moderator</th>
+                        <th>Time</th>
+                        <th>IP Address</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range .Actions }}
+                    <tr>
+                        <td>
+                            {{ if eq .ActionType "delete_thread" }}
+                            <span class="action-type delete">Delete Thread</span>
+                            {{ else if eq .ActionType "delete_post" }}
+                            <span class="action-type delete">Delete Post</span>
+                            {{ else }}
+                            <span class="action-type">{{ .ActionType }}</span>
+                            {{ end }}
+                        </td>
+                        <td class="action-target">
+                            {{ if eq .TargetType "thread" }}
+                            Thread #{{ .TargetID }}
+                            {{ else if eq .TargetType "post" }}
+                            Post #{{ .TargetID }}
+                            {{ else }}
+                            {{ .TargetType }} #{{ .TargetID }}
+                            {{ end }}
+                        </td>
+                        <td>{{ .Username }}</td>
+                        <td class="action-time">{{ .ExecutedAt | formatTime }}</td>
+                        <td>{{ .IPAddress }}</td>
+                        <td class="action-reason">
+                            {{ if .Reason.Valid }}
+                            {{ .Reason.String }}
+                            {{ else }}
+                            (No reason provided)
+                            {{ end }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+            {{ else }}
+            <p style="padding: 2rem; text-align: center;">No moderation actions have been recorded yet.</p>
+            {{ end }}
+        </div>
+
+        {{ if .Pagination.TotalPages }}
+        <div class="pagination">
+            {{ if .Pagination.HasPrev }}
+            <a href="/mod/actions?page={{ .Pagination.PrevPage }}">&laquo; Previous</a>
+            {{ end }}
+
+            <span>Page {{ .Pagination.CurrentPage }} of {{ .Pagination.TotalPages }}</span>
+
+            {{ if .Pagination.HasNext }}
+            <a href="/mod/actions?page={{ .Pagination.NextPage }}">Next &raquo;</a>
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+</body>
+
+</html>
